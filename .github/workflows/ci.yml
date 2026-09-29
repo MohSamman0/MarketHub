@@ -1,0 +1,34 @@
+name: MarketHub verification
+on: [push, pull_request]
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+      - run: npm ci && npm run build
+        working-directory: frontend
+      - run: dotnet test tests/MarketHub.Tests --configuration Release
+      - run: |
+          mkdir -p backend/MarketHub.Api/wwwroot
+          cp -R frontend/dist/markethub/browser/. backend/MarketHub.Api/wwwroot/
+          dotnet build backend/MarketHub.Api --configuration Release
+          cd backend/MarketHub.Api
+          ASPNETCORE_ENVIRONMENT=Development ASPNETCORE_URLS=http://127.0.0.1:5080 PublicOrigin=http://127.0.0.1:5080 dotnet bin/Release/net10.0/MarketHub.Api.dll > /tmp/markethub.log 2>&1 &
+      - run: |
+          for i in $(seq 1 30); do curl -fsS http://127.0.0.1:5080/api/health && break || sleep 1; done
+          node tests/api-smoke.mjs
+      - run: npx playwright install --with-deps chromium && npm run test:e2e
+        working-directory: frontend
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: browser-report
+          path: frontend/playwright-report

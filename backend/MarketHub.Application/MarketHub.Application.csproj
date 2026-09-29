@@ -1,0 +1,3 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup><ProjectReference Include="../MarketHub.Domain/MarketHub.Domain.csproj" /></ItemGroup>
+</Project>

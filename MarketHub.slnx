@@ -1,0 +1,12 @@
+<Solution>
+  <Folder Name="/Backend/">
+    <Project Path="backend/MarketHub.Domain/MarketHub.Domain.csproj" />
+    <Project Path="backend/MarketHub.Application/MarketHub.Application.csproj" />
+    <Project Path="backend/MarketHub.Infrastructure/MarketHub.Infrastructure.csproj" />
+    <Project Path="backend/MarketHub.Migrations.SqlServer/MarketHub.Migrations.SqlServer.csproj" />
+    <Project Path="backend/MarketHub.Api/MarketHub.Api.csproj" />
+  </Folder>
+  <Folder Name="/Tests/">
+    <Project Path="tests/MarketHub.Tests/MarketHub.Tests.csproj" />
+  </Folder>
+</Solution>

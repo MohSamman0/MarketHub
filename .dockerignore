@@ -1,0 +1,11 @@
+**/bin
+**/obj
+**/node_modules
+**/dist
+**/.angular
+**/App_Data
+**/wwwroot
+demo
+work
+.git
+.env
