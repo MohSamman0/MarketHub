@@ -28,6 +28,15 @@ public sealed class CommerceTests : IAsyncLifetime
     public async Task DisposeAsync() { await db.DisposeAsync(); await connection.DisposeAsync(); }
     private CheckoutRequest Request(int quantity = 1) => new("Test customer", "+966500000000", "Test Street Building 12", "Riyadh", [new(product.Id, quantity)]);
 
+    [Fact]
+    public async Task Native_sqlite_is_new_enough_to_fix_CVE_2025_6965()
+    {
+        await using var command = connection.CreateCommand();
+        command.CommandText = "SELECT sqlite_version()";
+        var version = Version.Parse((string)(await command.ExecuteScalarAsync())!);
+        Assert.True(version >= new Version(3, 50, 2), $"Loaded vulnerable SQLite {version}");
+    }
+
     [Theory]
     [InlineData(10000, 2500, 1875, 14375)]
     [InlineData(49999, 2500, 7875, 60374)]
